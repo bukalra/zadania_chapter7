@@ -1,20 +1,57 @@
-cards = [{'name': 'Joe', 'last_name': 'Doe', 'company':'Apple' , 'position':'manager' , 'email':'joe.doe@apple.com' },
-{'name': 'Jake', 'last_name': 'Simson', 'company':'Google' , 'position':'developer' , 'email':'jake.simson@google.com' },
-{'name': 'Bow', 'last_name': 'Black', 'company':'Cisco' , 'position':'sales' , 'email':'bow.black@cisco.com' },
-{'name': 'Sammy', 'last_name': 'Frank', 'company':'Intel' , 'position':'director' , 'email':'sammy.frank@intel.com' },
-{'name': 'July', 'last_name': 'Obama', 'company':'Miscosoft' , 'position':'CEO' , 'email':'july.obbama@ms.com' }
-]
+from faker import Faker
+faker = Faker()
 
-class BusinessCards:
-    def __init__(self, name = 'Mark', last_name = 'Dowson', company = 'Orange', position = 'presales', email = 'mark.dowson@orange.com'):
+class BaseContact:
+    def __init__(self, name, last_name, private_number, email):
         self.name = name
         self.last_name = last_name
+        self.private_number = private_number
+        self.email = email
+        self.lable_lenght = len(self.name) + len(self.last_name)
+    def contact(self):
+        print(f'I am calling to {self.name} {self.last_name} using business number {self.private_number}')
+
+class BusinessContact(BaseContact):
+    def __init__(self, company, position, business_number, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.company = company
         self.position = position
-        self.email = email
+        self.business_number = business_number
+        self.lable_lenght = len(self.name) + len(self.last_name)
+    def contact(self):
+        print(self.company, self.position, self.business_number)
+        print(f'I am calling to {self.name} {self.last_name} using business number {self.business_number}')
 
-first_card = BusinessCards()
+def create_contact(type, quantity):
+    if type == 1:
+        i = 0
+        while i < quantity:
+            name = faker.first_name()
+            last_name = faker.last_name()
+            private_number = faker.phone_number()
+            business_number = faker.phone_number()
+            company = faker.company()
+            email = name+'.'+last_name+'@'+faker.free_email_domain()
+            position = faker.job()
+            card = BaseContact(name, last_name, private_number, email)
+            card.contact()
+            i += 1
+    if type == 2:
+        i = 0
+        while i < quantity:
+            name = faker.first_name()
+            last_name = faker.last_name()
+            private_number = faker.phone_number()
+            business_number = faker.phone_number()
+            company = faker.company()
+            email = name+'.'+last_name+'@'+faker.free_email_domain()
+            print(email)
+            position = faker.job()
+            print(position)
+            card = BusinessContact(company, position, business_number, name, last_name, private_number, email)
+            card.contact()
+            i += 1
 
-for each in cards:
-    card = (BusinessCards(name = each['name'], last_name = each['last_name'], company = each['company'], position = each['position'], email = each['email']))
-    print(card.name, card.last_name, card.email)
+type = int(input('What type of contact you want to create: 1.Private, 2.Business '))
+quantity = int(input('How many contacts you want to create: '))
+create_contact(type, quantity)
