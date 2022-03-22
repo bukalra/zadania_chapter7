@@ -1,98 +1,102 @@
 from readline import set_pre_input_hook
 import random
 
-library = [
-{'title':'Shawshank', 'release_year':'1994', 'genre':'drama','views':10},
-{'title':'Forest Gump', 'release_year':'1994', 'genre':'comedy','views':19},
-{'title':'The Shining', 'release_year':'1980', 'genre':'psychological','views':122},
-{'title':'Troy', 'release_year':'2004', 'genre':'historical','views':33},
-{'title':'Cast Away', 'release_year':'2000', 'genre':'survival drama','views':14},
-
-{'title':'Band Of Brothers', 'release_year':'2001', 'genre':'war drama', 'views':11, 'seasons':[1],'episodes':[1,2,3,4,5,6,7,8,9,10]},
-{'title':'The Witcher', 'release_year':'2020', 'genre':'fantasy', 'views':18, 'seasons':[1,2],'episodes':[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]},
-{'title':'House of Cards', 'release_year':'2017', 'genre':'political fiction', 'views':22, 'seasons':[1,2,3,4,5,6],'episodes':[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,3,24]},
-{'title':'Black Mirror', 'release_year':'2016', 'genre':'fantasy', 'views':55, 'seasons':[1,2,3],'episodes':[1,2,3,4,5,6,7,8,9,10,11,12]},
-]
-
-movies = []
-series = []
-top_views = []
-
 class Movie:
-    def __init__(self, title, release_year, genre, views):
+    def __init__(self, title, release_year, genre, views,type):
         self.title = title
         self.release_year = release_year
         self.genre = genre
         self.views = views
+        self.type = type
     def play(self, view_num = 1):
         self.views += view_num
     def __str__(self):
         return f'{self.title} ({self.release_year})'
 
 class Serie(Movie):
-    def __init__(self, season_number, episode_number, *args, **kwargs):
+    def __init__(self, seasons, episodes, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.episode_number = episode_number
-        self.season_number = season_number
+        self.episodes = episodes
+        self.seasons = seasons
+
     def play(self, view_num = 1):
         self.views += view_num
     def __str__(self):
-        if int(self.season_number) <10 and (self.episode_number) <10:
-            return f'{self.title} S0{self.season_number}E0{self.episode_number}'
-        elif int(self.season_number) <10:
-            return f'{self.title} S0{self.season_number}E{self.episode_number}'
-        elif int(self.episode_number) <10:
-            return f'{self.title} S{self.season_number}E0{self.episode_number}'
+        _episode = random.choice(self.episodes)
+        _season = random.choice(self.seasons)
+        if int(_season) <10 and (_episode <10):
+            return f'{self.title} S0{_season}E0{_episode}'
+        elif int(_season) <10:
+            return f'{self.title} S0{_season}E{_episode}'
+        elif int(_season) <10:
+            return f'{self.title} S{_season}E0{_episode}'
+
+library = [
+Movie(title='Shawshank', release_year =1994, genre='drama',views=10, type = 'M'),
+Movie(title='Forest Gump', release_year=1994, genre='comedy',views=19,type = 'M'),
+Movie(title='The Shining', release_year=1980, genre='psychological',views=34,type = 'M'),
+Movie(title='Troy', release_year=2004, genre='historical',views = 33,type = 'M'),
+Movie(title='Cast Away', release_year=2000, genre='survival drama',views=14,type = 'M'),
+Serie(title='Band Of Brothers', release_year=2001, genre='war drama', views=11,type = 'S', seasons= [1], episodes=[1,2,3,4,5,6,7,8,9,10]),
+Serie(title='The Witcher', release_year=2020, genre='fantasy', views=18,type = 'S', seasons=[1,2],episodes=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]),
+Serie(title='House of Cards', release_year=2017, genre='political fiction', views=22,type = 'S', seasons=[1,2,3,4,5,6],episodes=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,3,24]),
+Serie(title='Black Mirror', release_year=2016, genre='fantasy', views=55,type = 'S', seasons=[1,2,3],episodes=[1,2,3,4,5,6,7,8,9,10,11,12])
+]
+
+movies = []
+series = []
+top_views = []
+name = input('what movie do you look for?')
+quantity = int(input('How many most viewed movies do you want to list?'))
 
 def get_movies():
     for item in library:
-        if len(item)==4:
-            movies.append(item['title'])
+        if item.type == 'M':
+            movies.append(item.title)
     return(sorted(movies))
 
 def get_series():
     for item in library:
-        if len(item)==6:
-            series.append(item['title'])
+        if item.type == 'S':
+            series.append(item.title)
     return(sorted(series))
 
 def search(name):
-    i= 0 
     for item in library:
-        i += 1
-        if len(item) == 6 and item['title']==name:
-            print(f'The serie available in the base {item}')
-            break
-        elif len(library) == i:
-            print('The serie is not available in the base')
+        if item.title == name:
+            return item
         else:
-            print('Searching...')
+            return None
            
 def generate_views():
-    random_title = random.choice(library)['title']
+    random_title = random.choice(library).title
     for item in library:
-        if random_title == item['title']:
-            item['views'] += random.choice(range(1,100))
-            print(item['title'])
+        if random_title == item.title:
+            item.views += random.choice(range(1,100))
+            return item.views
 
 def multiplication():
     i = 0
     while i < 10:
         generate_views()
         i+=1
+        return None
 
 sorted_top_views = []
-quantity = int(input('How many best view movies/series do you want to display?'))
-def top_titles():
-    top_views = sorted(library, key=lambda d: d['views'])
-    i=1
-    for i, item in enumerate(top_views[-1:-quantity-1:-1]):
-        print(f'{i+1}.{item["title"]} with {item["views"]} views')
+
+def top_titles(quantity):
+    library.sort(key=lambda x:x.views)
+    i = 1 
+    movie_rank = ''
+    for movie in library[::-1]:
+        if i <= quantity:
+            movie_rank +=  (f'{i}.{movie.title} with {movie.views} views\n')
+        else:
+            break
+        i += 1 
+    return movie_rank
         
-top_titles()
+if __name__ == "__main__":
+    item = generate_views()
+    print(item)
 
-
-
-'''serie = Serie(title= 'Band Of Brothers', release_year = '2002', genre = 'war drama', season_number = '12', 
-episode_number= '9')
-movie = Movie(title=library[0]['title'], release_year=library[0]['release_year'], genre=library[0]['genre'])'''
