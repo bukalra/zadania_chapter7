@@ -46,8 +46,7 @@ Serie(title='Black Mirror', release_year=2016, genre='fantasy', views=55,type = 
 movies = []
 series = []
 top_views = []
-name = input('what movie do you look for?')
-quantity = int(input('How many most viewed movies do you want to list?'))
+sorted_top_views = []
 
 def get_movies():
     for item in library:
@@ -62,9 +61,11 @@ def get_series():
     return(sorted(series))
 
 def search(name):
+    name = input('what movie do you look for?')
     for item in library:
         if item.title == name:
-            return item
+            return f'Movie avaialble in the library: {item.title}'
+
         else:
             return None
            
@@ -73,7 +74,7 @@ def generate_views():
     for item in library:
         if random_title == item.title:
             item.views += random.choice(range(1,100))
-            return item.views
+        return item.views
 
 def multiplication():
     i = 0
@@ -82,9 +83,8 @@ def multiplication():
         i+=1
         return None
 
-sorted_top_views = []
-
 def top_titles(quantity):
+    quantity = int(input('How many most viewed movies do you want to list?'))
     library.sort(key=lambda x:x.views)
     i = 1 
     movie_rank = ''
@@ -97,6 +97,6 @@ def top_titles(quantity):
     return movie_rank
         
 if __name__ == "__main__":
-    item = generate_views()
+    item = search(name=3)
     print(item)
 
